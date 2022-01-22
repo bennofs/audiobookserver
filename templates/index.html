@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Audiobooks</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <style>
+         .book-list {
+             display: flex;
+             flex-flow: row wrap;
+             align-items: start;
+             justify-content: center;
+         }
+
+         .book-list__book {
+             height: 20rem;
+             margin-left: 2vw;
+             margin-top: 2vw;
+             max-width: 20rem;
+         }
+
+         .book {
+             text-decoration: none;
+             border-radius: 1rem;
+             box-shadow: 10px 10px 10px 1px rgba(0,0,0,0.08);
+             overflow: hidden;
+         }
+
+
+         .book__cover {
+             height: 100%;
+             width: 100%;
+             object-fit: contain;
+             object-position: top center;
+         }
+
+         .book__title {
+             text-decoration: none;
+             background-color: #eee;
+             color: black;
+             font-weight: bold;
+             font-family: serif;
+             display: block;
+             width: 100%;
+             padding: 0.5rem;
+         }
+
+         .book:hover .book__title {
+             background-color: #333;
+             color: white;
+         }
+
+        </style>
+
+    </head>
+    <body class="book-list">
+        {% for book in books %}
+        <a class="book-list__book book" href="{{book.download}}">
+            <span class="book__title">{{book.name}}</span>
+            <img class="book__cover" src="{{book.cover}}" title="{{book.name}}">
+        </a>
+        {% endfor %}
+
+    </body>
+</html>
