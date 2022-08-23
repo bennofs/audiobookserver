@@ -7,9 +7,9 @@ from flask import (
     Flask,
     url_for,
     send_file,
-    safe_join,
     render_template,
 )
+from werkzeug.security import safe_join
 
 MEDIA_ROOT = os.path.abspath(os.getenv("MEDIA_ROOT", "/tmp/audiobooks"))
 NAME_RE = re.compile(r"^[a-zA-ZäöüÄÖÜ:\- 0-9.]*$")
@@ -56,26 +56,26 @@ def get_zip(name):
         return "invalid name", 404
 
     zip_name = safe_join(MEDIA_ROOT, name + ".zip")
-    if os.path.exists(zip_name):
+    if zip_name and os.path.exists(zip_name):
         res = make_response(
             send_file(
                 zip_name,
                 mimetype="application/zip",
                 as_attachment=True,
-                attachment_filename=os.path.basename(zip_name),
+                download_name=os.path.basename(zip_name),
             )
         )
         res.headers["X-Content-Type-Options"] = "nosniff"
         return res
 
     m4b_name = safe_join(MEDIA_ROOT, name + ".m4b")
-    if os.path.exists(m4b_name):
+    if m4b_name and os.path.exists(m4b_name):
         res = make_response(
             send_file(
                 m4b_name,
                 mimetype="audio/x-m4a",
                 as_attachment=True,
-                attachment_filename=os.path.basename(m4b_name),
+                download_name=os.path.basename(m4b_name),
             )
         )
         res.headers["X-Content-Type-Options"] = "nosniff"
@@ -88,7 +88,11 @@ def cover(name):
     if not NAME_RE.match(name):
         return "invalid name", 404
 
-    return send_file(safe_join(MEDIA_ROOT, name, "cover.jpg"))
+    safe = safe_join(MEDIA_ROOT, name, "cover.jpg")
+    if not safe:
+        return "invalid name", 404
+
+    return send_file(safe)
 
 
 if __name__ == "__main__":
